@@ -20,7 +20,9 @@
       border-radius: 4px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
       z-index: 1;
+      line-height: 1.6;
     }
+
     #legend img {
       vertical-align: middle;
       margin-right: 8px;
@@ -33,9 +35,9 @@
 <!-- Legend -->
 <div id="legend">
   <h4>Legend</h4>
-  <div><img src="https://cdn-icons-png.flaticon.com/512/1242/1242392.png" width="20"> Public Bathroom</div>
-  <div><img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" width="20"> Bike Parking</div>
-  <div><img src="https://aaroninbrooklyn.github.io/deliveringtogetheratbpl/assets/bpl-icon.png" width="20"> Brooklyn Public Library</div>
+  <div><img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/restroom-icon.svg" width="20"> Public Bathroom</div>
+  <div><img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/bike-parking-icon.svg" width="20"> Bike Parking</div>
+  <div><img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/bklyn-logo.svg" width="20"> Brooklyn Public Library</div>
 </div>
 
 <script>
@@ -61,11 +63,9 @@
   map.on('load', () => {
     geolocate.trigger();
 
-    // Utility to create popup on hover
     function addHoverPopup(layerId, getContent) {
       map.on('mouseenter', layerId, () => map.getCanvas().style.cursor = 'pointer');
       map.on('mouseleave', layerId, () => map.getCanvas().style.cursor = '');
-
       map.on('mousemove', layerId, (e) => {
         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
         if (!features.length) return;
