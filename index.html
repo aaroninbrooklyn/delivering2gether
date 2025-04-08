@@ -10,7 +10,7 @@
     body { margin: 0; padding: 0; font-family: sans-serif; }
     #map { width: 100vw; height: 100vh; }
 
-    #legend, #title-box {
+    #legend, #gif-box {
       position: absolute;
       background-color: white;
       padding: 10px;
@@ -31,30 +31,25 @@
       margin-right: 8px;
     }
 
-    #title-box {
+    #gif-box {
       top: 20px;
       left: 20px;
-      max-width: 260px;
+      max-width: 280px;
+      padding: 8px;
     }
 
-    #title-box h2 {
-      margin: 0 0 6px;
-      font-size: 16px;
-    }
-
-    #title-box p {
-      margin: 0;
-      font-size: 13px;
+    #gif-box img {
+      max-width: 100%;
+      display: block;
     }
   </style>
 </head>
 <body>
 <div id="map"></div>
 
-<!-- Title/Info -->
-<div id="title-box">
-  <h2>DELIVERING TOGETHER</h2>
-  <p>Use this map to find the closest library, restroom, or bike rack!</p>
+<!-- Multilingual GIF Title -->
+<div id="gif-box">
+  <img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/maptitle.gif" alt="Delivering Together Map Info" />
 </div>
 
 <!-- Legend -->
@@ -117,7 +112,7 @@
             .setLngLat(feature.geometry.coordinates)
             .setHTML(popupContent)
             .addTo(map);
-        }, 300); // Delay in milliseconds
+        }, 300); // Delay in ms
       });
     }
 
