@@ -10,10 +10,8 @@
     body { margin: 0; padding: 0; font-family: sans-serif; }
     #map { width: 100vw; height: 100vh; }
 
-    #legend {
+    #legend, #title-box {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
       background-color: white;
       padding: 10px;
       font-size: 14px;
@@ -23,14 +21,41 @@
       line-height: 1.6;
     }
 
+    #legend {
+      bottom: 20px;
+      left: 20px;
+    }
+
     #legend img {
       vertical-align: middle;
       margin-right: 8px;
+    }
+
+    #title-box {
+      top: 20px;
+      left: 20px;
+      max-width: 260px;
+    }
+
+    #title-box h2 {
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+
+    #title-box p {
+      margin: 0;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
 <div id="map"></div>
+
+<!-- Title/Info -->
+<div id="title-box">
+  <h2>DELIVERING TOGETHER</h2>
+  <p>Use this map to find the closest library, restroom, or bike rack!</p>
+</div>
 
 <!-- Legend -->
 <div id="legend">
@@ -64,19 +89,35 @@
     geolocate.trigger();
 
     function addHoverPopup(layerId, getContent) {
+      let hoverPopup = null;
+      let hoverTimeout = null;
+
       map.on('mouseenter', layerId, () => map.getCanvas().style.cursor = 'pointer');
-      map.on('mouseleave', layerId, () => map.getCanvas().style.cursor = '');
+      map.on('mouseleave', layerId, () => {
+        map.getCanvas().style.cursor = '';
+        if (hoverPopup) {
+          hoverPopup.remove();
+          hoverPopup = null;
+        }
+        clearTimeout(hoverTimeout);
+      });
+
       map.on('mousemove', layerId, (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-        if (!features.length) return;
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(() => {
+          const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+          if (!features.length) return;
 
-        const feature = features[0];
-        const popupContent = getContent(feature);
+          const feature = features[0];
+          const popupContent = getContent(feature);
 
-        new mapboxgl.Popup({ closeButton: false, offset: [0, -10] })
-          .setLngLat(feature.geometry.coordinates)
-          .setHTML(popupContent)
-          .addTo(map);
+          if (hoverPopup) hoverPopup.remove();
+
+          hoverPopup = new mapboxgl.Popup({ closeButton: false, offset: [0, -10] })
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(popupContent)
+            .addTo(map);
+        }, 300); // Delay in milliseconds
       });
     }
 
