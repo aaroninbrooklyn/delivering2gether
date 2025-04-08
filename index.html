@@ -84,7 +84,7 @@
     addHoverPopup('bpl-branches', f => {
       const p = f.properties;
       return `
-        <strong>${p.branch}</strong><br>
+        <strong>${p.branch} Library</strong><br>
         ${p.address}<br>
         <strong>Phone:</strong> ${p.phone}<br>
         <strong>7 Day Service:</strong> ${p['Seven Day Service']}<br>
@@ -98,21 +98,30 @@
         Thu: ${p.Thursday}<br>
         Fri: ${p.Friday}<br>
         Sat: ${p.Saturday}<br>
-        Sun: ${p.Sunday}<br>
-        <strong>Delivering Together:</strong> ${p['Delivering Together']}
+        Sun: ${p.Sunday}
       `;
     });
 
-    // Public bathrooms
+    // Public restrooms
     addHoverPopup('public-restrooms', f => {
       const p = f.properties;
-      return `<strong>Public Bathroom</strong><br>${p.address || 'No address available'}`;
+      return `
+        <strong>Public Bathroom</strong><br>
+        <strong>Facility Name:</strong> ${p.facility_name}<br>
+        <strong>Hours of Operation:</strong> ${p.hours_of_operation}<br>
+        <strong>Open:</strong> ${p.open}<br>
+        <strong>Status:</strong> ${p.status}
+      `;
     });
 
     // Bike parking
     addHoverPopup('bike-parking', f => {
       const p = f.properties;
-      return `<strong>Bike Parking</strong><br>${p.address || 'No address available'}`;
+      return `
+        <strong>Bike Parking</strong><br>
+        <strong>Address:</strong> ${p.IF0Address || 'N/A'}<br>
+        <strong>On or off Street?</strong> ${p.onoffst || 'N/A'}
+      `;
     });
   });
 
