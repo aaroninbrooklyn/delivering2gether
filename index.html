@@ -7,65 +7,18 @@
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
   <style>
-    body { margin: 0; padding: 0; font-family: sans-serif; }
+    body { margin: 0; padding: 0; }
     #map { width: 100vw; height: 100vh; }
-
-    #legend, #gif-box {
-      position: absolute;
-      background-color: white;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 4px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-      z-index: 1;
-      line-height: 1.6;
-    }
-
-    #legend {
-      bottom: 20px;
-      left: 20px;
-    }
-
-    #legend img {
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-
-    #gif-box {
-      top: 20px;
-      left: 20px;
-      max-width: 280px;
-      padding: 8px;
-    }
-
-    #gif-box img {
-      max-width: 100%;
-      display: block;
-    }
   </style>
 </head>
 <body>
 <div id="map"></div>
-
-<!-- Multilingual GIF Title -->
-<div id="gif-box">
-  <img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/maptitle.gif" alt="Delivering Together Map Info" />
-</div>
-
-<!-- Legend -->
-<div id="legend">
-  <h4>Legend</h4>
-  <div><img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/restroom-icon.svg" width="20"> Public Bathroom</div>
-  <div><img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/bike-parking-icon.svg" width="20"> Bike Parking</div>
-  <div><img src="https://raw.githubusercontent.com/aaroninbrooklyn/delivering2gether/main/assets/bklyn-logo.svg" width="20"> Brooklyn Public Library</div>
-</div>
-
 <script>
   mapboxgl.accessToken = 'pk.eyJ1IjoiYWFyb25pbmJyb29rbHluIiwiYSI6ImNtOGowMmZ0dzBjMDgycnB4eWdhZW9nZ2sifQ.Z70awiKsIraT8Mfh-T_iAg';
 
   const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/aaroninbrooklyn/cm8ynjmie006x01s43bs01wo2',
+    style: 'mapbox://styles/mapbox/streets-v12',
     center: [-73.951257, 40.622065],
     zoom: 10.5
   });
@@ -78,91 +31,15 @@
     showUserHeading: true,
     fitBoundsOptions: { maxZoom: 14 }
   });
+
   map.addControl(geolocate);
 
   map.on('load', () => {
     geolocate.trigger();
-
-    function addHoverPopup(layerId, getContent) {
-      let hoverPopup = null;
-      let hoverTimeout = null;
-
-      map.on('mouseenter', layerId, () => map.getCanvas().style.cursor = 'pointer');
-      map.on('mouseleave', layerId, () => {
-        map.getCanvas().style.cursor = '';
-        if (hoverPopup) {
-          hoverPopup.remove();
-          hoverPopup = null;
-        }
-        clearTimeout(hoverTimeout);
-      });
-
-      map.on('mousemove', layerId, (e) => {
-        clearTimeout(hoverTimeout);
-        hoverTimeout = setTimeout(() => {
-          const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-          if (!features.length) return;
-
-          const feature = features[0];
-          const popupContent = getContent(feature);
-
-          if (hoverPopup) hoverPopup.remove();
-
-          hoverPopup = new mapboxgl.Popup({ closeButton: false, offset: [0, -10] })
-            .setLngLat(feature.geometry.coordinates)
-            .setHTML(popupContent)
-            .addTo(map);
-        }, 300); // Delay in ms
-      });
-    }
-
-    // BPL Branch popup
-    addHoverPopup('bpl-branches', f => {
-      const p = f.properties;
-      return `
-        <strong>${p.branch} Library</strong><br>
-        ${p.address}<br>
-        <strong>Phone:</strong> ${p.phone}<br>
-        <strong>7 Day Service:</strong> ${p['Seven Day Service']}<br>
-        <strong>Amenities:</strong> ${p.Amenities}<br>
-        <strong>Subway:</strong> ${p.subway}<br>
-        <strong>Bus:</strong> ${p.bus}<br>
-        <strong>Hours:</strong><br>
-        Mon: ${p.Monday}<br>
-        Tue: ${p.Tuesday}<br>
-        Wed: ${p.Wednesday}<br>
-        Thu: ${p.Thursday}<br>
-        Fri: ${p.Friday}<br>
-        Sat: ${p.Saturday}<br>
-        Sun: ${p.Sunday}
-      `;
-    });
-
-    // Public restrooms
-    addHoverPopup('public-restrooms', f => {
-      const p = f.properties;
-      return `
-        <strong>Public Bathroom</strong><br>
-        <strong>Facility Name:</strong> ${p.facility_name}<br>
-        <strong>Hours of Operation:</strong> ${p.hours_of_operation}<br>
-        <strong>Open:</strong> ${p.open}<br>
-        <strong>Status:</strong> ${p.status}
-      `;
-    });
-
-    // Bike parking
-    addHoverPopup('bike-parking', f => {
-      const p = f.properties;
-      return `
-        <strong>Bike Parking</strong><br>
-        <strong>Address:</strong> ${p.IF0Address || 'N/A'}<br>
-        <strong>On or off Street?</strong> ${p.onoffst || 'N/A'}
-      `;
-    });
   });
 
   map.on('error', (e) => {
-    console.error('Mapbox GL error:', e.error);
+    console.error('Mapbox error:', e.error);
   });
 </script>
 </body>
